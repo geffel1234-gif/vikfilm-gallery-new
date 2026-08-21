@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VikFilm – Kundengalerie</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav">
+      <div class="logo">VIKFILM</div>
+      <span>Kundengalerie</span>
+    </nav>
+
+    <div class="hero-content">
+      <p class="eyebrow">EURE GALERIE</p>
+      <h1>Anna &amp; Lukas</h1>
+      <p class="event">Hochzeit · 15. August 2026</p>
+      <button class="primary" onclick="document.querySelector('#gallery').scrollIntoView({behavior:'smooth'})">
+        Galerie ansehen
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <p class="eyebrow">VIKFILM</p>
+      <h2>Die schönsten Momente eures Tages.</h2>
+      <p>Hier findet ihr eure persönliche Hochzeitsgalerie. Nehmt euch Zeit, schaut euch die Bilder in Ruhe an und genießt die Erinnerungen.</p>
+    </section>
+
+    <section id="gallery" class="gallery">
+      <div class="gallery-item large"><div class="placeholder">Euer Foto</div></div>
+      <div class="gallery-item"><div class="placeholder">Euer Foto</div></div>
+      <div class="gallery-item"><div class="placeholder">Euer Foto</div></div>
+      <div class="gallery-item"><div class="placeholder">Euer Foto</div></div>
+      <div class="gallery-item large"><div class="placeholder">Euer Foto</div></div>
+      <div class="gallery-item"><div class="placeholder">Euer Foto</div></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="logo">VIKFILM</div>
+    <p>Photography &amp; Videography</p>
+  </footer>
+</body>
+</html>
