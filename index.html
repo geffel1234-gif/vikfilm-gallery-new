@@ -24,7 +24,7 @@
       <button class="action" id="favoriteButton" onclick="showFavorites()"><span class="icon">♡</span><span>FAVORITEN</span></button>
       <button class="action" onclick="downloadGallery()"><span class="icon">↓</span><span>DOWNLOAD</span></button>
       <button class="action" onclick="shareGallery()"><span class="icon">↗</span><span>TEILEN</span></button>
-      <button class="action" onclick="startSlideshow()"><span class="icon">▷</span><span>DIASHOW</span></button>
+      <button class="action" id="slideshowButton" onclick="startSlideshow()"><span class="icon">▷</span><span>DIASHOW</span></button>
     </div>
   </section>
 
@@ -57,6 +57,7 @@
   <script>
     let currentPhoto = 0;
     let slideshowTimer = null;
+    let slideshowRunning = false;
     const photos = ['photo-1','photo-2','photo-3','photo-4','photo-5','photo-6'];
     let favorites = new Set(JSON.parse(localStorage.getItem('vikfilmFavorites') || '[]'));
 
@@ -66,6 +67,7 @@
       document.querySelectorAll('.photo-heart').forEach((button,index)=>{const active=favorites.has(index);button.textContent=active?'♥':'♡';button.classList.toggle('selected',active);});
       document.getElementById('favoriteCount').textContent=`${favorites.size} FAVORITEN`;
       updateLightboxFavorite();
+      updatePhotoActionUI();
     }
     function toggleFavorite(index,event){if(event)event.stopPropagation();if(favorites.has(index))favorites.delete(index);else favorites.add(index);saveFavorites();}
     function toggleCurrentFavorite(){toggleFavorite(currentPhoto);}
@@ -107,9 +109,25 @@
       });
     }
 
-    function startSlideshow(){currentPhoto=0;showPhoto();document.getElementById('lightbox').classList.add('show');clearInterval(slideshowTimer);slideshowTimer=setInterval(()=>changePhoto(1),3500);}
-    function openPhoto(i){clearInterval(slideshowTimer);currentPhoto=i;showPhoto();document.getElementById('lightbox').classList.add('show');}
-    function closePhoto(e){if(e&&e.target!==e.currentTarget)return;clearInterval(slideshowTimer);document.getElementById('lightbox').classList.remove('show');}
+    // Start the slideshow from the first photo and advance automatically every 3.5 seconds.
+    // It loops continuously until the lightbox is closed.
+    function startSlideshow(){
+      clearInterval(slideshowTimer);
+      slideshowRunning=true;
+      currentPhoto=0;
+      showPhoto();
+      document.getElementById('lightbox').classList.add('show');
+      document.getElementById('slideshowButton').classList.add('active');
+      slideshowTimer=setInterval(()=>changePhoto(1),3500);
+    }
+    function stopSlideshow(){
+      clearInterval(slideshowTimer);
+      slideshowTimer=null;
+      slideshowRunning=false;
+      document.getElementById('slideshowButton')?.classList.remove('active');
+    }
+    function openPhoto(i){stopSlideshow();currentPhoto=i;showPhoto();document.getElementById('lightbox').classList.add('show');}
+    function closePhoto(e){if(e&&e.target!==e.currentTarget)return;stopSlideshow();document.getElementById('lightbox').classList.remove('show');}
     function changePhoto(d){currentPhoto=(currentPhoto+d+photos.length)%photos.length;showPhoto();}
     function showPhoto(){const b=document.getElementById('lightboxPhoto');b.className='lightbox-photo '+photos[currentPhoto];document.getElementById('counter').textContent=`${currentPhoto+1} / ${photos.length}`;updateLightboxFavorite();}
     document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').classList.contains('show'))return;if(e.key==='Escape')closePhoto();if(e.key==='ArrowLeft')changePhoto(-1);if(e.key==='ArrowRight')changePhoto(1);});
