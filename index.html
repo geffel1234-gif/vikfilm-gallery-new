@@ -19,9 +19,9 @@
   </header>
 
   <section class="gallery-toolbar">
-    <div class="gallery-title"><strong>JULIA &amp; KOSTA</strong><span>VIKFILM</span></div>
+    <div class="gallery-title"><strong>JULIA &amp; KOSTA</strong><span id="favoriteCount">0 FAVORITEN</span></div>
     <div class="actions">
-      <button class="action" id="favoriteButton" onclick="toggleFavorites()"><span class="icon">♡</span><span>FAVORITEN</span></button>
+      <button class="action" id="favoriteButton" onclick="showFavorites()"><span class="icon">♡</span><span>FAVORITEN</span></button>
       <button class="action" onclick="downloadGallery()"><span class="icon">↓</span><span>DOWNLOAD</span></button>
       <button class="action" onclick="shareGallery()"><span class="icon">↗</span><span>TEILEN</span></button>
       <button class="action" onclick="startSlideshow()"><span class="icon">▷</span><span>DIASHOW</span></button>
@@ -29,12 +29,12 @@
   </section>
 
   <main id="gallery" class="gallery">
-    <button class="photo photo-1" onclick="openPhoto(0)"></button>
-    <button class="photo photo-2" onclick="openPhoto(1)"></button>
-    <button class="photo photo-3" onclick="openPhoto(2)"></button>
-    <button class="photo photo-4" onclick="openPhoto(3)"></button>
-    <button class="photo photo-5" onclick="openPhoto(4)"></button>
-    <button class="photo photo-6" onclick="openPhoto(5)"></button>
+    <div class="photo-wrap"><button class="photo photo-1" onclick="openPhoto(0)" aria-label="Foto 1"></button><button class="photo-heart" onclick="toggleFavorite(0,event)" aria-label="Foto 1 favorisieren">♡</button></div>
+    <div class="photo-wrap"><button class="photo photo-2" onclick="openPhoto(1)" aria-label="Foto 2"></button><button class="photo-heart" onclick="toggleFavorite(1,event)" aria-label="Foto 2 favorisieren">♡</button></div>
+    <div class="photo-wrap"><button class="photo photo-3" onclick="openPhoto(2)" aria-label="Foto 3"></button><button class="photo-heart" onclick="toggleFavorite(2,event)" aria-label="Foto 3 favorisieren">♡</button></div>
+    <div class="photo-wrap"><button class="photo photo-4" onclick="openPhoto(3)" aria-label="Foto 4"></button><button class="photo-heart" onclick="toggleFavorite(3,event)" aria-label="Foto 4 favorisieren">♡</button></div>
+    <div class="photo-wrap"><button class="photo photo-5" onclick="openPhoto(4)" aria-label="Foto 5"></button><button class="photo-heart" onclick="toggleFavorite(4,event)" aria-label="Foto 5 favorisieren">♡</button></div>
+    <div class="photo-wrap"><button class="photo photo-6" onclick="openPhoto(5)" aria-label="Foto 6"></button><button class="photo-heart" onclick="toggleFavorite(5,event)" aria-label="Foto 6 favorisieren">♡</button></div>
   </main>
 
   <div class="lightbox" id="lightbox" onclick="closePhoto(event)">
@@ -49,18 +49,58 @@
 
   <script>
     let currentPhoto = 0;
-    let favoritesOn = false;
     const photos = ['photo-1','photo-2','photo-3','photo-4','photo-5','photo-6'];
-    function scrollToGallery(){document.getElementById('gallery').scrollIntoView({behavior:'smooth'});}
-    function toggleFavorites(){favoritesOn=!favoritesOn;const b=document.getElementById('favoriteButton');b.classList.toggle('active',favoritesOn);b.querySelector('.icon').textContent=favoritesOn?'♥':'♡';document.querySelectorAll('.photo').forEach((p,i)=>p.classList.toggle('favorite',favoritesOn&&i%2===0));}
-    async function shareGallery(){const data={title:'Julia & Kosta – VikFilm',text:'Unsere Galerie bei VikFilm',url:window.location.href};if(navigator.share){try{await navigator.share(data);}catch(e){}}else{await navigator.clipboard?.writeText(window.location.href);alert('Galerie-Link wurde kopiert.');}}
-    function downloadGallery(){alert('Hier wird später der Download eurer ausgewählten Bilder eingebaut.');}
+    let favorites = new Set(JSON.parse(localStorage.getItem('vikfilmFavorites') || '[]'));
+
+    function scrollToGallery(){ document.getElementById('gallery').scrollIntoView({behavior:'smooth'}); }
+
+    function saveFavorites(){
+      localStorage.setItem('vikfilmFavorites', JSON.stringify([...favorites]));
+      updateFavoriteUI();
+    }
+
+    function updateFavoriteUI(){
+      document.querySelectorAll('.photo-heart').forEach((button,index)=>{
+        const active = favorites.has(index);
+        button.textContent = active ? '♥' : '♡';
+        button.classList.toggle('selected', active);
+      });
+      document.getElementById('favoriteCount').textContent = `${favorites.size} FAVORITEN`;
+    }
+
+    function toggleFavorite(index,event){
+      event.stopPropagation();
+      if(favorites.has(index)) favorites.delete(index); else favorites.add(index);
+      saveFavorites();
+    }
+
+    function showFavorites(){
+      document.querySelectorAll('.photo-wrap').forEach((wrap,index)=>{
+        wrap.classList.toggle('hidden-favorite', favorites.size > 0 && !favorites.has(index));
+      });
+      const button = document.getElementById('favoriteButton');
+      button.classList.toggle('active', favorites.size > 0);
+      button.querySelector('.icon').textContent = favorites.size > 0 ? '♥' : '♡';
+    }
+
+    async function shareGallery(){
+      const data={title:'Julia & Kosta – VikFilm',text:'Unsere Galerie bei VikFilm',url:window.location.href};
+      if(navigator.share){try{await navigator.share(data);}catch(e){}}
+      else{await navigator.clipboard?.writeText(window.location.href);alert('Galerie-Link wurde kopiert.');}
+    }
+
+    function downloadGallery(){
+      if(favorites.size===0){ alert('Wählt zuerst eure Lieblingsbilder mit dem Herz aus.'); return; }
+      alert(`${favorites.size} Favoriten ausgewählt. Der echte Foto-Download kommt als nächster Schritt.`);
+    }
+
     function startSlideshow(){currentPhoto=0;showPhoto();document.getElementById('lightbox').classList.add('show');}
     function openPhoto(i){currentPhoto=i;showPhoto();document.getElementById('lightbox').classList.add('show');}
     function closePhoto(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('lightbox').classList.remove('show');}
     function changePhoto(d){currentPhoto=(currentPhoto+d+photos.length)%photos.length;showPhoto();}
     function showPhoto(){const b=document.getElementById('lightboxPhoto');b.className='lightbox-photo '+photos[currentPhoto];document.getElementById('counter').textContent=`${currentPhoto+1} / ${photos.length}`;}
     document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').classList.contains('show'))return;if(e.key==='Escape')closePhoto();if(e.key==='ArrowLeft')changePhoto(-1);if(e.key==='ArrowRight')changePhoto(1);});
+    updateFavoriteUI();
   </script>
 </body>
 </html>
