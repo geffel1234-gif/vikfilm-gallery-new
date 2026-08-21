@@ -28,11 +28,19 @@ button{font:inherit}
 .photo-wrap{position:relative;min-width:0;min-height:0;overflow:hidden}
 .photo-wrap.hidden-favorite{display:none}
 .photo{width:100%;height:100%;border:0;padding:0;cursor:pointer;background-size:cover;background-position:center;position:relative;display:block;transition:filter .25s,transform .3s}
-.photo:hover{filter:brightness(.9)}
-.photo-heart{position:absolute;right:12px;bottom:12px;width:34px;height:34px;border:0;border-radius:50%;background:#fff;color:#777;font-size:19px;line-height:34px;padding:0;cursor:pointer;box-shadow:0 2px 10px #0003;z-index:2;opacity:0;transform:translateY(5px);transition:.2s}
+.photo:hover{filter:brightness(.88)}
+.photo-heart{position:absolute;right:12px;bottom:12px;width:34px;height:34px;border:0;border-radius:50%;background:#fff;color:#777;font-size:19px;line-height:34px;padding:0;cursor:pointer;box-shadow:0 2px 10px #0003;z-index:3;opacity:0;transform:translateY(5px);transition:.2s}
 .photo-wrap:hover .photo-heart,.photo-heart.selected{opacity:1;transform:translateY(0)}
 .photo-heart:hover{transform:scale(1.08)!important;color:#111}
 .photo-heart.selected{color:#111}
+
+/* Pic-Time-style actions: appear directly over the photo on hover */
+.photo-actions{position:absolute;right:12px;bottom:12px;display:flex;align-items:center;gap:6px;z-index:4;opacity:0;transform:translateY(6px);pointer-events:none;transition:opacity .2s ease,transform .2s ease}
+.photo-wrap:hover .photo-actions,.photo-actions:focus-within{opacity:1;transform:translateY(0);pointer-events:auto}
+.photo-actions button{width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.96);color:#666;font-size:19px;line-height:36px;padding:0;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.2);transition:transform .15s ease,color .15s ease,background .15s ease}
+.photo-actions button:hover{transform:scale(1.08);color:#111;background:#fff}
+.photo-actions button.selected{color:#111}
+.photo-wrap:hover .photo-heart{opacity:0;pointer-events:none}
 
 .photo-1{grid-row:span 3}
 .photo-2{grid-row:span 3}
@@ -81,7 +89,9 @@ footer .brand{color:#222;margin-bottom:10px}
  .gallery{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:180px;padding:4px 4px 40px}
  .photo-1,.photo-2,.photo-3,.photo-4{grid-row:span 2}
  .photo-5,.photo-6{grid-row:span 2}
- .photo-heart{opacity:1;transform:none;right:8px;bottom:8px}
+ .photo-heart{display:none}
+ .photo-actions{right:8px;bottom:8px;opacity:1;transform:none;pointer-events:auto}
+ .photo-actions button{width:34px;height:34px;line-height:34px}
  .hero h1{font-size:42px}
  .lightbox-photo{width:90vw;height:68vh}
  .lightbox-controls{gap:0}
