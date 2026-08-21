@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Playfair+Display:wght@500;600&display=swap');
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #f7f5f1; color: #191816; font-family: 'DM Sans', sans-serif; }
+
+.hero { min-height: 92vh; position: relative; display: flex; flex-direction: column; background: linear-gradient(135deg, #d9d2c7, #8d867d); color: white; }
+.nav { display: flex; justify-content: space-between; align-items: center; padding: 28px 5vw; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
+.logo { font-weight: 500; letter-spacing: .25em; }
+.hero-content { margin: auto; text-align: center; padding: 60px 20px; }
+.eyebrow { font-size: 11px; letter-spacing: .25em; text-transform: uppercase; margin-bottom: 20px; opacity: .75; }
+h1, h2 { font-family: 'Playfair Display', serif; font-weight: 500; }
+h1 { font-size: clamp(52px, 9vw, 110px); line-height: .95; margin: 0 0 20px; }
+.event { font-size: 14px; letter-spacing: .08em; margin-bottom: 38px; }
+.primary { border: 1px solid rgba(255,255,255,.7); background: white; color: #191816; padding: 15px 25px; border-radius: 999px; cursor: pointer; font: inherit; transition: .2s; }
+.primary:hover { transform: translateY(-2px); }
+
+.intro { max-width: 700px; margin: 0 auto; padding: 120px 24px 70px; text-align: center; }
+.intro .eyebrow { color: #777; }
+h2 { font-size: clamp(36px, 5vw, 58px); line-height: 1.05; margin: 0 0 24px; }
+.intro p:last-child { color: #666; line-height: 1.8; font-size: 15px; }
+
+.gallery { width: min(1200px, 90vw); margin: 0 auto 120px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.gallery-item { aspect-ratio: 4 / 3; overflow: hidden; background: #ded9d1; }
+.gallery-item.large { aspect-ratio: 4 / 5; }
+.placeholder { width: 100%; height: 100%; display: grid; place-items: center; color: #9b958d; font-size: 12px; letter-spacing: .15em; text-transform: uppercase; }
+
+footer { border-top: 1px solid #ddd8d0; text-align: center; padding: 50px 20px; color: #777; font-size: 12px; }
+footer .logo { color: #191816; margin-bottom: 10px; }
+
+@media (max-width: 650px) {
+  .nav { padding: 22px 20px; }
+  .nav > span { display: none; }
+  .gallery { grid-template-columns: 1fr; width: calc(100% - 30px); gap: 10px; }
+  .gallery-item, .gallery-item.large { aspect-ratio: 4 / 5; }
+  .intro { padding-top: 90px; }
+}
